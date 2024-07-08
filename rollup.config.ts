@@ -1,8 +1,8 @@
-import resolve from "@rollup/plugin-node-resolve";
 import commonjs from "@rollup/plugin-commonjs";
+import resolve from "@rollup/plugin-node-resolve";
+import terser from "@rollup/plugin-terser";
 import typescript from "@rollup/plugin-typescript";
 import { dts } from "rollup-plugin-dts";
-import terser from "@rollup/plugin-terser";
 import peerDepsExternal from "rollup-plugin-peer-deps-external";
 import postcss from "rollup-plugin-postcss";
 
@@ -13,14 +13,12 @@ export default [
     input: "src/index.ts",
     output: [
       {
-        file: packageJson.main,
-        format: "cjs",
-        sourcemap: true,
+        dir: "dist/esm", // Output directory for ES modules
+        format: "esm", // Output format (ES modules)
       },
       {
-        file: packageJson.module,
-        format: "esm",
-        sourcemap: true,
+        dir: "dist/cjs", // Output directory for CommonJS modules
+        format: "cjs", // Output format (CommonJS)
       },
     ],
     plugins: [
@@ -29,11 +27,11 @@ export default [
       commonjs(),
       typescript({ tsconfig: "./tsconfig.json" }),
       terser(),
-      postcss(), 
+      postcss(),
     ],
     external: ["react", "react-dom"],
   },
-  { 
+  {
     input: "src/index.ts",
     output: [{ file: "dist/types.d.ts", format: "es" }],
     plugins: [dts()],
